@@ -9,14 +9,14 @@ import Weapons.WeaponsList;
 
 public class Room {
   private int roomType;
-  private ArrayList<Character> characters;
+  private ArrayList<Character> occupants;
 
   public Room() {
-    characters = new ArrayList<Character>();
+    occupants = new ArrayList<Character>();
   }
 
   public Room(int roomType) {
-    characters = new ArrayList<Character>();
+    occupants = new ArrayList<Character>();
     this.roomType = roomType;
   }
 
@@ -51,7 +51,7 @@ public class Room {
   }
 
   private void encounter() {
-    Battle.setEnemy(this.getCharacter(0));
+    Battle.setEnemy(this.occupants);
     Battle.result(Battle.start());
   }
 
@@ -64,24 +64,24 @@ public class Room {
     if (this.roomType == 0) {
       System.out.println("You enter the shop");
     } else if (this.roomType == 1) {
-      System.out.println("You come across a " + this.getCharacter(0).getName() + ", and you decide to fight it.");
+      System.out.println("You come across " + this.occupants + ", and you decide to fight it.");
     }
     System.out.println("");
     Main.sleep();
   }
 
-  public void addCharacter(Character character) {
-    this.characters.add(character);
+  public void addOccupants(Character character) {
+    this.occupants.add(character);
   }
 
-  public Character getCharacter(int index) {
-    return this.characters.get(index);
+  public ArrayList<Character> getOccupants() {
+    return this.occupants;
   }
 
   @Override
   public String toString() {
-    if (characters.size() > 0)
-      return ("Room that has " + characters.get(0).getName());
+    if (occupants.size() > 0)
+      return ("Room that has " + occupants);
     return ("Exit");
     // TODO fix bug here shop room should return shop not exit
   }

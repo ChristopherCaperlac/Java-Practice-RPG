@@ -12,6 +12,7 @@ public class Player extends Character {
     this.currHealth = this.maxHealth;
     this.attack = 5;
     this.defense = 1;
+    this.magic = 10;
     this.gold = 0;
     this.weapon = WeaponsList.getWeapon(0);
   }

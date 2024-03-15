@@ -7,6 +7,7 @@ public class SkeletonMage extends Skeleton {
   public SkeletonMage(int level) {
     super(level);
     this.name = "Skeleton Mage";
+    this.magic = 10;
     this.weapon = WeaponsList.getWeapon(3);
   }
 

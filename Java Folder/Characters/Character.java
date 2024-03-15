@@ -10,8 +10,10 @@ public abstract class Character {
   protected int currHealth;
   protected int attack;
   protected int defense;
+  protected int magic;
   protected int gold;
   protected Weapon weapon;
+  protected boolean isAlive = true;
 
   public Character() {
     this.name = "";
@@ -21,6 +23,7 @@ public abstract class Character {
     this.currHealth = 0;
     this.attack = 0;
     this.defense = 0;
+    this.magic = 0;
     this.gold = 0;
     this.weapon = null;
   }
@@ -33,11 +36,12 @@ public abstract class Character {
     this.currHealth = 0;
     this.attack = 0;
     this.defense = 0;
+    this.magic = 0;
     this.gold = 0;
     this.weapon = null;
   }
 
-  public Character(String name, int level, int maxHealth, int attack, int defense) {
+  public Character(String name, int level, int maxHealth, int attack, int defense, int magic) {
     this.name = name;
     this.level = level;
     this.exp = 0;
@@ -45,6 +49,7 @@ public abstract class Character {
     this.currHealth = this.maxHealth;
     this.attack = attack;
     this.defense = defense;
+    this.magic = magic;
     this.gold = 0;
     this.weapon = null;
   }
@@ -105,6 +110,10 @@ public abstract class Character {
 
   public void setCurrHealth(int health) {
     this.currHealth = health;
+    if (health > 0)
+    return;
+    this.currHealth = 0;
+    this.isAlive = false;
   }
 
   public Weapon getWeapon() {
@@ -131,8 +140,17 @@ public abstract class Character {
 
   public void setDefense(int defense) {
     this.defense = defense;
-    if (this.defense < 0)
-      this.defense = 0;
+    if (this.defense > 0)
+    return;
+    this.defense = 0;
+  }
+
+  public int getMagic() {
+    return this.magic;
+  }
+
+  public void setMagic(int agility) {
+    this.magic = agility;
   }
 
   public int getGold() {
@@ -142,4 +160,13 @@ public abstract class Character {
   public void setGold(int gold) {
     this.gold = gold;
   }
+
+  public boolean getIsAlive() {
+    return this.isAlive;
+  }
+
+  public void setAlive(boolean isAlive) {
+    this.isAlive = isAlive;
+  }
+
 }

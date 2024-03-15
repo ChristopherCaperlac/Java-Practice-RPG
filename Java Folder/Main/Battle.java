@@ -1,17 +1,20 @@
 package Main;
 
+import java.util.ArrayList;
+
 import Characters.Character;
 
 public class Battle {
   private static Character player = Main.getPlayer();
-  private static Character enemy;
+  private static ArrayList<Character> enemy = new ArrayList<Character>();
+  private static ArrayList<Character> defeatedEnemy = new ArrayList<Character>();
 
-  public static void setEnemy(Character enemy) {
+  public static void setEnemy(ArrayList<Character> enemy) {
     Battle.enemy = enemy;
   }
 
   public static int start() { // returns 0 if player wins, 1 if you died, 2 if ran
-    System.out.println("You are now fighting a " + enemy);
+    System.out.println("You are now fighting " + enemy);
     System.out.println("");
     player = Main.getPlayer();
     int actualAttack = player.getAttack();
@@ -21,40 +24,42 @@ public class Battle {
     int turn = 0;
     while (turn < 100) {
       System.out.println(player + ": " + player.getCurrHealth() + " HP");
-      System.out.println(enemy + ": " + enemy.getCurrHealth() + " HP");
+      for (int i = 0; i < enemy.size(); i++) {
+        System.out.println(enemy.get(i) + ": " + enemy.get(i).getCurrHealth() + " HP");
+      }
       System.out.println("");
       System.out.println("What would you like to do?");
-      System.out.println("[1] Attack " + enemy);
-      System.out.println("[2] Defend");
-      System.out.println("[3] Run");
+      for (int i = 1; i < enemy.size() + 1; i++) {
+        System.out.println("[" + i + "]" + " Attack " + enemy.get(i - 1));
+      }
+      System.out.println("[" + (enemy.size() + 1) + "] Defend");
+      System.out.println("[" + (enemy.size() + 2) + "] Run");
       // Player Turn
       input = 0;
-      while (input != 1 && input != 2 && input != 3) {
+      while (input < 1 || input > enemy.size() + 2) {
         input = Main.getScnr().nextInt();
         Main.getScnr().nextLine();
       }
       System.out.println("");
-      switch (input) {
-        case 1:
-          player.attack(enemy);
-          break;
-        case 2:
-          player.setDefense(player.getDefense() + 5);
-          break;
-        case 3:
-          roll = (int) (Math.random() * 20);
-          if (roll > 10) {
-            System.out.println("You managed to run away");
-            return 2;
-          } else {
-            System.out.println("You failed to run away");
-          }
-          break;
+      if (input <= enemy.size())
+        player.attack(enemy.get(input - 1));
+      if (input == enemy.size() + 1)
+        player.setDefense(player.getDefense() + 5);
+      if (input == enemy.size() + 2) {
+        roll = (int) (Math.random() * 20);
+        if (roll > 10) {
+          System.out.println("You managed to run away");
+          return 2;
+        } else {
+          System.out.println("You failed to run away");
+        }
       }
       System.out.println("");
       Main.sleep();
 
-      if (enemy.getCurrHealth() <= 0) {
+      if (!enemy.get(input - 1).getIsAlive())
+        defeatedEnemy.add(enemy.remove(input - 1));
+      if (enemy.isEmpty()) {
         System.out.println("You won!");
         return 0;
       }
@@ -62,22 +67,25 @@ public class Battle {
       // Enemy Turn
       System.out.println("It's the enemy's turn");
       System.out.println("");
-      enemy.attack(player);
-      Main.sleep();
-
-      if (player.getCurrHealth() <= 0) {
+      for (int i = 0; i < enemy.size(); i++) {
+        enemy.get(i).attack(player);
+        Main.sleep();
+        if (player.getIsAlive())
+          continue;
         System.out.println("You died!");
         return 1;
       }
       turn++;
       player.setDefense(actualDefense);
       System.out.println("");
+      // TODO add turn based status effects here
+      if (!enemy.isEmpty())
+        continue;
+      System.out.println("You won!");
+      return 0;
     }
-    try {
-      throw new Exception("You exceeded 100 turns");
-    } catch (Exception e) {
-      return 2;
-    }
+    System.out.println("You exceeded 100 turns");
+    return 2;
   }
 
   public static void result(int result) { // if 0, reward(). if 1, die(), if 2 run()
@@ -98,19 +106,27 @@ public class Battle {
   }
 
   public static void reward() { // player is rewarded
-    player.setGold(player.getGold() + enemy.getGold());
-    player.setExp(player.getExp() + enemy.getExp());
-    System.out.println("You gained " + enemy.getGold() + " gold!");
-    System.out.println("You gained " + enemy.getExp() + " exp!");
+    int sumGold = 0;
+    int sumExp = 0;
+    for (int i = 0; i < defeatedEnemy.size(); i++) {
+      sumGold += defeatedEnemy.get(i).getGold();
+      sumExp += defeatedEnemy.get(i).getExp();
+    }
+    player.setGold(player.getGold() + sumGold);
+    player.setExp(player.getExp() + sumExp);
+    System.out.println("You gained " + sumGold + " gold!");
+    System.out.println("You gained " + sumExp + " exp!");
     Main.getPlayer().levelUp();
     System.out.println("");
   }
 
-  public static void die() { // add death screen here and return to nearest checkpoint
+  public static void die() {
+    // TODO add death screen here and return to nearest checkpoint
     throw new ArithmeticException("Haven't Finished die Code Here");
   }
 
-  public static void run() { // return to previous screen
+  public static void run() {
+    // TODO add return to previous screen
     throw new ArithmeticException("Haven't Finished run Code Here");
   }
 }

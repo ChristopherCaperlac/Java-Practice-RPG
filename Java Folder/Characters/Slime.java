@@ -12,6 +12,7 @@ public class Slime extends Character {
     this.currHealth = this.maxHealth;
     this.attack = level * 1;
     this.defense = (int) (level * 0.5);
+    this.magic = 5;
     this.gold = level * 10;
     this.weapon = WeaponsList.getWeapon(2);
   }
